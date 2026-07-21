@@ -33,7 +33,7 @@ export default function CtaSection() {
               onClick={() => playSound(800, 0.15)}
               className="flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#FF5511] to-[#FF2A6D] hover:from-[#e04400] hover:to-[#e61d5c] text-white rounded-xl text-xs font-black shadow-lg shadow-orange-500/10 transition-all hover:scale-[1.02] cursor-pointer"
             >
-              <Download className="w-4 h-4" /> Download Companion APK (v1.0.0)
+              <Download className="w-4 h-4" /> Download Companion APK (v1.0.1)
             </a>
             <Link
               to="/register"
