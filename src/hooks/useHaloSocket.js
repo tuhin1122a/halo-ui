@@ -278,6 +278,21 @@ export default function useHaloSocket() {
     }
   }, [devices, addLog, disconnect]);
 
+  // Auto-poll system stats every 10 seconds when session is active
+  useEffect(() => {
+    if (!session) return;
+    const intervalId = setInterval(() => {
+      if (socketRef.current && session) {
+        socketRef.current.emit('command:send', {
+          sessionId: session.id,
+          type: 'GET_STATS',
+          payload: {},
+        });
+      }
+    }, 10000);
+    return () => clearInterval(intervalId);
+  }, [session]);
+
   useEffect(() => {
     return () => {
       if (socketRef.current) {

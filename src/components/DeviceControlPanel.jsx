@@ -532,11 +532,37 @@ export default function DeviceControlPanel({
     }
   };
 
-  // Extract battery numeric percentage
+  // ── Stats helpers (keys match Android's SystemUtils.getSystemStats) ──
   const getBatteryVal = () => {
-    if (systemStats?.batteryLevel !== undefined) return systemStats.batteryLevel;
-    return 84;
+    if (systemStats?.battery !== undefined) return systemStats.battery;
+    return '--';
   };
+
+  const bytesToGB = (bytes) => {
+    if (!bytes) return '--';
+    return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+  };
+
+  const getStorageFreeGB = () => bytesToGB(systemStats?.storageAvailable);
+  const getStorageTotalGB = () => bytesToGB(systemStats?.storageTotal);
+  const getStoragePct = () => {
+    if (!systemStats?.storageAvailable || !systemStats?.storageTotal) return 45;
+    const used = systemStats.storageTotal - systemStats.storageAvailable;
+    return Math.round((used / systemStats.storageTotal) * 100);
+  };
+
+  const getRamUsedGB = () => {
+    if (!systemStats?.ramTotal || !systemStats?.ramAvailable) return '--';
+    const used = systemStats.ramTotal - systemStats.ramAvailable;
+    return (used / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
+  };
+  const getRamPct = () => {
+    if (!systemStats?.ramTotal || !systemStats?.ramAvailable) return 60;
+    const used = systemStats.ramTotal - systemStats.ramAvailable;
+    return Math.round((used / systemStats.ramTotal) * 100);
+  };
+
+  const getNetworkType = () => systemStats?.networkType || (systemStats ? 'Online' : '--');
 
   return (
     <div className="flex flex-col gap-8 w-full animate-fade-in">
@@ -594,32 +620,44 @@ export default function DeviceControlPanel({
             <Battery className="w-4 h-4 text-[#E8622A]" />
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-[#2C1A0E] dark:text-white font-mono">{getBatteryVal()}%</span>
+            <span className="text-2xl font-black text-[#2C1A0E] dark:text-white font-mono">
+              {getBatteryVal() === '--' ? '--' : `${getBatteryVal()}%`}
+            </span>
             <span className="text-[10px] text-[#7C5C44]">capacity</span>
           </div>
           <div className="w-full bg-[#FDF8F4] dark:bg-[#180d07] h-2 rounded-full mt-4 overflow-hidden border border-[#E8622A]/5">
-            <div 
-              className="bg-gradient-to-r from-[#E8622A] to-[#F59E0B] h-full rounded-full transition-all duration-500" 
-              style={{ width: `${getBatteryVal()}%` }}
+            <div
+              className="bg-gradient-to-r from-[#E8622A] to-[#F59E0B] h-full rounded-full transition-all duration-700"
+              style={{ width: `${getBatteryVal() === '--' ? 0 : getBatteryVal()}%` }}
             />
           </div>
         </div>
 
-        {/* Storage */}
-        <div className="glass-card p-5 bg-white dark:bg-[#23140c]/40 border border-[#E8622A]/10 dark:border-[#E8622A]/20 rounded-2xl shadow-sm">
+        {/* Storage – clickable → opens File Explorer */}
+        <div
+          onClick={onOpenFiles}
+          className="glass-card p-5 bg-white dark:bg-[#23140c]/40 border border-[#E8622A]/10 dark:border-[#E8622A]/20 rounded-2xl shadow-sm cursor-pointer group hover:border-[#F59E0B]/40 hover:shadow-md hover:bg-[#FFFBF4] dark:hover:bg-[#2a1a08]/60 transition-all duration-200 active:scale-[0.98]"
+          title="Click to open File Explorer"
+        >
           <div className="flex items-center justify-between text-[#7C5C44] dark:text-[#C4A992] mb-3">
             <span className="text-[10px] font-black uppercase tracking-wider font-mono">Storage space</span>
-            <HardDrive className="w-4 h-4 text-[#F59E0B]" />
+            <HardDrive className="w-4 h-4 text-[#F59E0B] group-hover:scale-110 transition-transform" />
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-black text-[#2C1A0E] dark:text-white font-mono">
-              {systemStats?.availableStorage || '12.8 GB'}
+              {getStorageFreeGB()}
             </span>
-            <span className="text-[10px] text-[#7C5C44]">free</span>
+            <span className="text-[10px] text-[#7C5C44]">free of {getStorageTotalGB()}</span>
           </div>
           <div className="w-full bg-[#FDF8F4] dark:bg-[#180d07] h-2 rounded-full mt-4 overflow-hidden border border-[#E8622A]/5">
-            <div className="bg-gradient-to-r from-[#F59E0B] to-[#E8622A] h-full rounded-full w-[45%]" />
+            <div
+              className="bg-gradient-to-r from-[#F59E0B] to-[#E8622A] h-full rounded-full transition-all duration-700"
+              style={{ width: `${getStoragePct()}%` }}
+            />
           </div>
+          <p className="text-[9px] text-[#F59E0B] font-bold mt-2.5 opacity-0 group-hover:opacity-100 transition-opacity font-mono tracking-wider">
+            OPEN FILE EXPLORER →
+          </p>
         </div>
 
         {/* Memory */}
@@ -630,12 +668,15 @@ export default function DeviceControlPanel({
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-black text-[#2C1A0E] dark:text-white font-mono">
-              {systemStats?.ramUsage || '4.2 GB'}
+              {getRamUsedGB()}
             </span>
-            <span className="text-[10px] text-[#7C5C44]">active</span>
+            <span className="text-[10px] text-[#7C5C44]">used of {bytesToGB(systemStats?.ramTotal)}</span>
           </div>
           <div className="w-full bg-[#FDF8F4] dark:bg-[#180d07] h-2 rounded-full mt-4 overflow-hidden border border-[#E8622A]/5">
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full w-[60%]" />
+            <div
+              className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-700"
+              style={{ width: `${getRamPct()}%` }}
+            />
           </div>
         </div>
 
@@ -647,7 +688,7 @@ export default function DeviceControlPanel({
           </div>
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-black text-[#2C1A0E] dark:text-white font-mono">
-              {systemStats?.networkType || 'Wi-Fi'}
+              {getNetworkType()}
             </span>
             <span className="text-[10px] text-[#7C5C44]">online</span>
           </div>
