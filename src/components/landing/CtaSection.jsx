@@ -28,12 +28,14 @@ export default function CtaSection() {
             transparently alongside standard services, providing high-quality control overlays.
           </p>
           <div className="flex flex-wrap gap-4 pt-3">
-            <button
-              onClick={handleDownload}
+            <a
+              href="/halo-app.apk"
+              download="halo-app.apk"
+              onClick={() => playSound(800, 0.15)}
               className="flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-[#FF5511] to-[#FF2A6D] hover:from-[#e04400] hover:to-[#e61d5c] text-white rounded-xl text-xs font-black shadow-lg shadow-orange-500/10 transition-all hover:scale-[1.02] cursor-pointer"
             >
               <Download className="w-4 h-4" /> Download Companion APK (v1.0.0)
-            </button>
+            </a>
             <Link
               to="/register"
               className="flex items-center gap-1.5 px-6 py-3.5 bg-slate-800/55 hover:bg-slate-800/80 border border-slate-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, Trash2, Wifi, WifiOff, Plus, Play, Info } from 'lucide-react';
+import { Smartphone, Trash2, Wifi, WifiOff, Plus, Play, Info, Download } from 'lucide-react';
 
 export default function DeviceSelection({ devices, onConnect, onDelete, loading, connectingId, onAddDevice }) {
   const formatLastSeen = (date) => {
@@ -141,6 +141,13 @@ export default function DeviceSelection({ devices, onConnect, onDelete, loading,
           <Smartphone className="w-8 h-8 text-[#7C5C44]/60 mx-auto mb-3 animate-bounce" />
           <h3 className="font-bold text-[#2C1A0E] dark:text-[#FFF3EB] text-sm">No Devices Available</h3>
           <p className="text-xs text-[#7C5C44] dark:text-[#C4A992] mt-1">Please download the Halo Android client and login to link a device</p>
+          <a
+            href="/halo-app.apk"
+            download="halo-app.apk"
+            className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#E8622A] hover:bg-[#D4531F] text-white text-xs font-semibold rounded-xl shadow-md transition-all"
+          >
+            <Download className="w-4 h-4" /> Download APK
+          </a>
         </div>
       )}
     </div>
