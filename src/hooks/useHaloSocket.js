@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { io } from 'socket.io-client';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://taskprobackend.codevionix.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://haloapi.codevionix.com';
 
 export default function useHaloSocket() {
   const [devices, setDevices] = useState([]);

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Smartphone, ShieldAlert, Sparkles, Mail, Lock, CheckCircle } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://taskprobackend.codevionix.com';
+const API_URL = import.meta.env.VITE_API_URL || 'https://haloapi.codevionix.com';
 
 export default function Register() {
   const [email, setEmail] = useState('');
