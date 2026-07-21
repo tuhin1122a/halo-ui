@@ -8,7 +8,6 @@ export default function CtaSection() {
   const handleDownload = () => {
     playSound(800, 0.15);
     setTimeout(() => playSound(1000, 0.25), 100);
-    alert('Download will begin shortly. Install the APK and authorize Accessibility Services.');
   };
 
   return (
