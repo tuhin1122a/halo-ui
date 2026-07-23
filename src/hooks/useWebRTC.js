@@ -41,21 +41,17 @@ export const useWebRTC = (socket, sessionId) => {
 
             const config = {
                 iceServers: [
+                    { urls: 'stun:213.199.58.40:3478' },
                     { urls: 'stun:stun.l.google.com:19302' },
                     {
                         urls: 'turn:213.199.58.40:3478?transport=udp',
-                        username: 'codevionix',
-                        credential: 'mirror123'
+                        username: 'halouser',
+                        credential: 'haloPassword123'
                     },
                     {
                         urls: 'turn:213.199.58.40:3478?transport=tcp',
-                        username: 'codevionix',
-                        credential: 'mirror123'
-                    },
-                    {
-                        urls: 'turn:213.199.58.40:443?transport=tcp',
-                        username: 'codevionix',
-                        credential: 'mirror123'
+                        username: 'halouser',
+                        credential: 'haloPassword123'
                     }
                 ],
                 sdpSemantics: 'unified-plan',

@@ -293,6 +293,31 @@ export default function useHaloSocket() {
     return () => clearInterval(intervalId);
   }, [session]);
 
+  // Auto background socket connection for real-time device status updates
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+
+    const bgSocket = io(`${API_URL}`, {
+      auth: { token },
+      transports: ['websocket'],
+    });
+
+    bgSocket.on('devices:updated', () => {
+      addLog('Device list updated in real-time', 'info');
+      fetchDevices();
+    });
+
+    bgSocket.on('device:status', (data) => {
+      addLog(`Device status change detected: ${data.deviceId} is now ${data.status}`, 'info');
+      fetchDevices();
+    });
+
+    return () => {
+      bgSocket.disconnect();
+    };
+  }, [fetchDevices, addLog]);
+
   useEffect(() => {
     return () => {
       if (socketRef.current) {
